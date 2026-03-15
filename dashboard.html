@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Lumira</title>
+  <link rel="icon" type="image/png" href="assets/brand/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <style>
+    /* Dashboard-specific overrides */
+    .dashboard-layout {
+      display: flex;
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+    .sidebar {
+      width: 260px;
+      padding: 2rem 1.5rem;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      background: rgba(0,0,0,0.2);
+      position: sticky;
+      top: 80px;
+      height: calc(100vh - 80px);
+    }
+    .sidebar-nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar-link {
+      display: block;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      margin-bottom: 4px;
+    }
+    .sidebar-link:hover, .sidebar-link.active {
+      background: rgba(123, 47, 247, 0.12);
+      color: #fff;
+    }
+    .main-content {
+      flex: 1;
+      padding: 2.5rem 3rem;
+      max-width: 1100px;
+    }
+    .welcome-header { margin-bottom: 2.5rem; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+    .stat-label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .stat-value {
+      display: block;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+    }
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .dashboard-tool-card {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .dashboard-tool-card:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(123, 47, 247, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(123, 47, 247, 0.15);
+    }
+    .dashboard-tool-card h3 {
+      color: #fff;
+      font-size: 1.15rem;
+      margin: 1rem 0 0.5rem;
+    }
+    .dashboard-tool-card p {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .tool-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .credit-bar-track {
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      margin-top: 1rem;
+      overflow: hidden;
+    }
+    .credit-bar-fill {
+      height: 100%;
+      background: var(--clr-violet);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+    }
+    .plan-status-box {
+      margin-top: auto;
+      padding: 1rem;
+      background: rgba(123, 47, 247, 0.1);
+      border-radius: 16px;
+      border: 1px solid rgba(123, 47, 247, 0.2);
+    }
+    .plan-status-box p { margin: 0; }
+    .plan-status-box .label { font-size: 0.8rem; color: #fff; font-weight: 600; margin-bottom: 0.25rem; }
+    .plan-status-box .sub { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .dashboard-layout { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding: 1rem;
+      }
+      .sidebar-nav { display: flex; gap: 0.5rem; overflow-x: auto; }
+      .plan-status-box { display: none; }
+      .main-content { padding: 1.5rem; }
+      .tool-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- BG Vibe -->
+  <div class="bg-vibe">
+      <div class="glow glow--1"></div>
+      <div class="glow glow--2"></div>
+      <div class="glow glow--3"></div>
+      <div class="stardust"></div>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-wrapper">
+          <img src="assets/brand/logo.png" alt="Lumira Logo" class="logo-img">
+        </div>
+        <span class="logo-text">Lu<span class="logo-accent">mira</span></span>
+      </a>
+
+      <div class="nav-actions">
+          <div class="nav-user-menu" id="navUserMenu">
+              <button class="nav-avatar-btn" id="navAvatarBtn">
+                  <span class="nav-avatar" id="navAvatar">?</span>
+                  <span class="nav-user-name" id="navUserName">User</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="user-dropdown" id="userDropdown">
+                  <a href="index.html" class="dropdown-item">Home</a>
+                  <a href="#" class="dropdown-item" id="logoutBtn">Sign Out</a>
+              </div>
+          </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <ul class="sidebar-nav">
+        <li><a href="#" class="sidebar-link active">Overview</a></li>
+        <li><a href="#" class="sidebar-link">My Creations</a></li>
+        <li><a href="#" class="sidebar-link">Settings</a></li>
+        <li><a href="#" class="sidebar-link">Help</a></li>
+      </ul>
+      <div class="plan-status-box">
+        <p class="label" id="planStatusLabel">Free Plan Active</p>
+        <p class="sub" id="planStatusSub">Upgrade for more credits</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="welcome-header">
+        <h1 class="hero-title" style="font-size: 2.5rem; margin-bottom: 0.5rem;">Welcome back, <span class="hero-gradient-text" id="welcomeName">Creator</span></h1>
+        <p class="hero-subtitle" style="margin: 0; text-align: left;">What are we building today?</p>
+      </header>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">AI Credits Remaining</span>
+          <span class="stat-value" id="creditCount">50</span>
+          <div class="credit-bar-track">
+            <div class="credit-bar-fill" id="creditBar" style="width: 100%"></div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Current Plan</span>
+          <span class="stat-value" id="planTier">Starter</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Generations Today</span>
+          <span class="stat-value" id="genCount">0</span>
+        </div>
+      </div>
+
+      <h2 class="section-title" style="font-size: 1.5rem; text-align: left; margin-bottom: 2rem;">YouTube Creator Tools</h2>
+      <div class="tool-grid">
+        <div class="dashboard-tool-card" data-tool="feature-title">
+          <div class="tool-icon-box" style="background: rgba(123, 47, 247, 0.12); color: var(--clr-violet);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <h3>Viral Title Generator</h3>
+          <p>Generate high-CTR titles based on your niche and keywords.</p>
+        </div>
+
+        <div class="dashboard-tool-card" data-tool="feature-script">
+          <div class="tool-icon-box" style="background: rgba(0, 212, 255, 0.12); color: var(--clr-blue);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <h3>Script Outliner</h3>
+          <p>Turn your ideas into structured scripts with hooks and CTAs.</p>
+        </div>
+
+        <div class="dashboard-tool-card" data-tool="feature-thumbnail">
+          <div class="tool-icon-box" style="background: rgba(255, 0, 153, 0.12); color: var(--clr-pink);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <h3>Thumbnail Concept Gen</h3>
+          <p>Visual concepts and text overlays to make your videos stand out.</p>
+        </div>
+
+        <div class="dashboard-tool-card" data-tool="feature-seo">
+          <div class="tool-icon-box" style="background: rgba(0, 255, 136, 0.12); color: var(--clr-green);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <h3>SEO & Niche Researcher</h3>
+          <p>Find low-competition keywords and high-demand niches.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ═══════════ TOOL MODAL ═══════════ -->
+  <div class="tool-overlay" id="toolOverlay"></div>
+  <div class="tool-modal" id="toolModal">
+    <button class="tool-modal-close" id="toolModalClose">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 5l10 10m0-10L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="tool-modal-header">
+      <div id="toolIcon" class="tool-modal-icon"></div>
+      <div>
+        <h2 id="toolTitle">Tool Name</h2>
+        <p id="toolSubtitle">Description of the tool functionality</p>
+      </div>
+    </div>
+    
+    <div class="tool-modal-content" id="toolContent">
+      <!-- Dynamic tool content injected here -->
+    </div>
+
+    <div class="tool-modal-footer">
+      <button class="btn btn--primary btn--full" id="runToolBtn">
+        <span class="btn-text">Generate with AI ✨</span>
+        <span class="btn-loader" style="display:none;"></span>
+      </button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="supabase.js"></script>
+  <script src="tools.js"></script>
+  <script>
+    // Dashboard Logic
+    document.addEventListener('DOMContentLoaded', async () => {
+      const sb = window.lumiraSupabase;
+      if (!sb) return;
+
+      const { data: { session } } = await sb.auth.getSession();
+      
+      if (!session) {
+        window.location.href = 'index.html?auth=required';
+        return;
+      }
+
+      // Load user data
+      const user = session.user;
+      document.getElementById('welcomeName').textContent = user.user_metadata.full_name || user.email.split('@')[0];
+      document.getElementById('navUserName').textContent = user.user_metadata.full_name || user.email.split('@')[0];
+      
+      if (user.user_metadata.full_name) {
+        document.getElementById('navAvatar').textContent = user.user_metadata.full_name.charAt(0).toUpperCase();
+      }
+
+      // Fetch profile for credits/tier
+      try {
+        const { data: profile } = await sb
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (profile) {
+          const credits = profile.credits ?? 50;
+          const tier = profile.subscription_tier || 'starter';
+          const maxCredits = tier === 'starter' ? 50 : tier === 'pro' ? 500 : 2000;
+          
+          document.getElementById('creditCount').textContent = credits.toLocaleString();
+          document.getElementById('planTier').textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+          document.getElementById('creditBar').style.width = `${Math.min(100, (credits / maxCredits) * 100)}%`;
+          
+          // Plan status sidebar
+          document.getElementById('planStatusLabel').textContent = `${tier.charAt(0).toUpperCase() + tier.slice(1)} Plan Active`;
+          if (tier === 'starter') {
+            document.getElementById('planStatusSub').textContent = 'Upgrade for more credits';
+          } else {
+            document.getElementById('planStatusSub').textContent = `${credits} credits remaining`;
+          }
+        }
+
+        // Count today's generations
+        const today = new Date().toISOString().split('T')[0];
+        const { count } = await sb
+          .from('tool_usage')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .gte('created_at', today);
+        
+        document.getElementById('genCount').textContent = (count || 0).toString();
+
+      } catch (err) {
+        console.error("Error loading profile:", err);
+      }
+
+      // Init tools
+      if (window.lumiraTools) window.lumiraTools.initDashboard();
+
+      // User dropdown toggle
+      document.getElementById('navAvatarBtn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('userDropdown')?.classList.toggle('active');
+      });
+      document.addEventListener('click', () => {
+        document.getElementById('userDropdown')?.classList.remove('active');
+      });
+    });
+
+    // Handle logout
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const sb = window.lumiraSupabase;
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
