@@ -1,104 +1,10 @@
 import { auth } from './auth.js';
 import { initTools } from './tools.js';
+import { initThreeScene } from './three-scene.js';
 import '../styles/index.css';
 
-// ── Particle Canvas ──
-const canvas = document.getElementById('particleCanvas');
-if (canvas) {
-  const ctx = canvas.getContext('2d');
-  let particles = [];
-  let w, h;
-
-  function resize() {
-    const hero = canvas.parentElement;
-    w = canvas.width = hero.offsetWidth;
-    h = canvas.height = hero.offsetHeight;
-  }
-
-  class Particle {
-    constructor() {
-      this.reset();
-    }
-    reset() {
-      this.x = Math.random() * w;
-      this.y = Math.random() * h;
-      this.r = Math.random() * 1.8 + 0.4;
-      this.dx = (Math.random() - 0.5) * 0.35;
-      this.dy = (Math.random() - 0.5) * 0.35;
-      this.opacity = Math.random() * 0.5 + 0.1;
-      const colors = ['0,212,255', '123,47,247', '255,107,157', '0,229,160'];
-      this.color = colors[Math.floor(Math.random() * colors.length)];
-    }
-    update() {
-      this.x += this.dx;
-      this.y += this.dy;
-      if (this.x < -10 || this.x > w + 10 || this.y < -10 || this.y > h + 10) {
-        this.reset();
-        if (Math.random() > 0.5) {
-          this.x = Math.random() > 0.5 ? -5 : w + 5;
-          this.y = Math.random() * h;
-        } else {
-          this.y = Math.random() > 0.5 ? -5 : h + 5;
-          this.x = Math.random() * w;
-        }
-      }
-    }
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
-      ctx.fill();
-    }
-  }
-
-  function initParticles() {
-    const count = Math.min(Math.floor((w * h) / 8000), 120);
-    particles = Array.from({ length: count }, () => new Particle());
-  }
-
-  function drawConnections() {
-    const maxDist = 130;
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < maxDist) {
-          const alpha = (1 - dist / maxDist) * 0.12;
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(0,212,255,${alpha})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-        }
-      }
-    }
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, w, h);
-    particles.forEach(p => {
-      p.update();
-      p.draw();
-    });
-    drawConnections();
-    requestAnimationFrame(animate);
-  }
-
-  resize();
-  initParticles();
-  animate();
-
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      resize();
-      initParticles();
-    }, 200);
-  });
-}
+// ── Three.js Hero Scene ──
+initThreeScene();
 
 // ── Navbar scroll effect ──
 const sections = document.querySelectorAll('section[id]');

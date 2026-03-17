@@ -12,23 +12,27 @@
 }
 
 :root {
-  /* SketricGen Deep Palette */
+  /* Spring & Midnight Palette */
   --bg-deep:       #000000;
-  --bg-surface:    #050505;
-  --bg-card:       #111111;
-  --bg-card-border:#1c1c1c;
-  --bg-card-hover: #161616;
+  --bg-surface:    #001F3F; /* Midnight Mirage */
+  --bg-card:       rgba(0, 31, 63, 0.4);
+  --bg-card-border:rgba(219, 230, 76, 0.1);
+  --bg-card-hover: rgba(0, 31, 63, 0.6);
 
-  --clr-accent:    #7b2ff7;
-  --clr-accent-glow: rgba(123, 47, 247, 0.3);
-  --clr-accent-dim:  rgba(123, 47, 247, 0.08);
+  --clr-accent:    #DBE64C; /* Spring */
+  --clr-accent-glow: rgba(219, 230, 76, 0.2);
+  --clr-accent-dim:  rgba(219, 230, 76, 0.05);
   
-  --text-primary:  #ffffff;
-  --text-secondary:#e2e8f0;
-  --text-muted:    #94a3b8;
+  --clr-blue:      #1E488F; /* Nuit Blanche */
+  --clr-green:     #74C365; /* Mantis */
+  --clr-violet:    #00804C; /* Book Green */
 
-  --border-subtle: rgba(255,255,255,0.08);
-  --border-accent: rgba(123, 47, 247, 0.3);
+  --text-primary:  #F6F7ED; /* Praxeti White */
+  --text-secondary:#DBE64C; /* Spring (Dimmed) for secondary highlights */
+  --text-muted:    rgba(246, 247, 237, 0.6);
+
+  --border-subtle: rgba(246, 247, 237, 0.08);
+  --border-accent: rgba(219, 230, 76, 0.2);
   
   /* Glassmorphism Tokens */
   --glass-bg:      rgba(255, 255, 255, 0.05);
@@ -57,14 +61,11 @@ html {
 
 body {
   font-family: var(--font-body);
-  background: var(--bg-deep);
+  background: var(--bg-deep); /* Pure #000000 */
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  background-image: 
-    radial-gradient(circle at 10% 10%, rgba(0, 212, 255, 0.03) 0%, transparent 40%),
-    radial-gradient(circle at 90% 90%, rgba(123, 47, 247, 0.03) 0%, transparent 40%);
   background-attachment: fixed;
   opacity: 0;
   animation: pageEntry 1.2s var(--ease-out) forwards;
@@ -159,13 +160,13 @@ section {
   width: auto;
   min-width: 440px;
   max-width: 95%;
-  background: rgba(10, 14, 35, 0.4);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 100px;
   padding: 0.25rem 0.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   z-index: 1000;
   transition: var(--trans-subtle);
 }
@@ -358,7 +359,8 @@ section {
   align-items: center;
   justify-content: center;
   padding: var(--section-pad);
-  padding-top: calc(180px + clamp(5rem, 10vw, 8rem));
+  padding-top: calc(120px + clamp(2rem, 5vw, 4rem));
+  background: transparent;
   overflow: hidden;
 }
 

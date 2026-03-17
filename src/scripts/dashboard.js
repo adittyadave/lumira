@@ -1,8 +1,10 @@
 import { supabase } from './supabase.js';
 import { initDashboardTools } from './tools.js';
+import { initThreeBackground } from './three-bg.js';
 import '../styles/index.css';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  initThreeBackground();
   if (!supabase) return;
 
   const { data: { session } } = await supabase.auth.getSession();
